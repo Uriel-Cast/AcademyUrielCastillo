@@ -1,22 +1,30 @@
 package com.urielcast.academytest2026.enhanced
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import com.urielcast.academytest2026.R
+import com.urielcast.academytest2026.core.model.Item
 import com.urielcast.academytest2026.enhanced.ui.EnhancedItemDetailScreen
 import com.urielcast.academytest2026.enhanced.ui.EnhancedItemsListScreen
 import com.urielcast.academytest2026.enhanced.ui.EnhancedItemsViewModel
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -27,17 +35,35 @@ private data class EnhancedDetailRoute(val id: String) : NavKey
 
 /**
  * Entry point of the Enhanced version. Room-backed via [EnhancedItemsViewModel];
- * a Navigation 3 back stack pushes the detail over the list. The adaptive
+ * a Navigation 3 back stack pushes the detail over the list. Deletes (from a
+ * swipe or the detail screen) go through a shared Undo snackbar. The adaptive
  * list-detail layout is layered on in the adaptive pass.
  */
 @Composable
 fun EnhancedApp(
     modifier: Modifier = Modifier,
     onExit: () -> Unit = {},
+    viewModel: EnhancedItemsViewModel = viewModel(factory = EnhancedItemsViewModel.Factory),
 ) {
-    val viewModel: EnhancedItemsViewModel = viewModel(factory = EnhancedItemsViewModel.Factory)
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val backStack = rememberNavBackStack(EnhancedListRoute)
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    fun deleteWithUndo(item: Item) {
+        viewModel.delete(item)
+        scope.launch {
+            val result = snackbarHostState.showSnackbar(
+                message = context.getString(R.string.enh_item_deleted, item.name),
+                actionLabel = context.getString(R.string.enh_undo),
+                // Long, so there's a comfortable window to undo the deletion.
+                duration = SnackbarDuration.Long,
+            )
+            if (result == SnackbarResult.ActionPerformed) viewModel.restore(item)
+        }
+    }
 
     NavDisplay(
         backStack = backStack,
@@ -47,9 +73,13 @@ fun EnhancedApp(
             entry<EnhancedListRoute> {
                 EnhancedItemsListScreen(
                     state = state,
+                    snackbarHostState = snackbarHostState,
                     onItemClick = { backStack.add(EnhancedDetailRoute(it.id)) },
                     onToggleFavorite = viewModel::toggleFavorite,
                     onAddItem = viewModel::addItem,
+                    onDeleteItem = { deleteWithUndo(it) },
+                    onQueryChange = viewModel::setQuery,
+                    onFilterChange = viewModel::setFilter,
                 )
             }
 
@@ -69,8 +99,9 @@ fun EnhancedApp(
                     EnhancedItemDetailScreen(
                         item = loaded,
                         onToggleFavorite = { viewModel.toggleFavorite(loaded) },
+                        onRename = { viewModel.rename(loaded.id, it) },
                         onDelete = {
-                            viewModel.delete(loaded)
+                            deleteWithUndo(loaded)
                             backStack.removeLastOrNull()
                         },
                         onBack = { backStack.removeLastOrNull() },
