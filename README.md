@@ -111,12 +111,19 @@ Everything Minimal does, made persistent and production-flavoured:
   and filtering, against an in-memory fake repository.
 - **UI test** (`app/src/androidTest`): a Compose test for the Minimal list
   (renders sorted items; the add flow reports the trimmed name).
+- **Screenshot tests** (`app/src/test/.../screenshots`, goldens in
+  `app/src/test/screenshots`): Roborazzi + Robolectric render the launcher and the
+  Minimal/Enhanced screens in the JVM and compare them against committed golden
+  images — including light/dark and the Italian/Spanish locales. No device needed,
+  so they run in CI.
 - Every screen and interaction was additionally verified by hand on an emulator
   (phone + landscape two-pane, dark mode, Spanish).
 
 ```bash
-./gradlew :app:testDebugUnitTest            # unit tests
+./gradlew :app:testDebugUnitTest            # unit + screenshot tests
 ./gradlew :app:connectedDebugAndroidTest    # UI tests (needs a device/emulator)
+./gradlew :app:recordRoborazziDebug         # (re)record the screenshot goldens
+./gradlew :app:verifyRoborazziDebug         # verify screens against the goldens
 ```
 
 ---
@@ -137,6 +144,12 @@ deliberate decisions to stay reliably buildable:
    pinned to the versions that target the stable **compileSdk 36**, and the
    adaptive list-detail is hand-rolled from the official Nav3 *scenes-listdetail*
    recipe using the window size class instead.
+3. **Screenshot tests via Roborazzi, not the official plugin.** Google's
+   `com.android.compose.screenshot` plugin applies and compiles the previews on
+   this toolchain, but its preview *discovery* finds zero tests under AGP 9.1.1
+   (even a trivial `@Preview`), so golden capture never runs. Roborazzi +
+   Robolectric render the screens as plain JVM tests instead — device-free and
+   unaffected by that discovery bug.
 
 ---
 

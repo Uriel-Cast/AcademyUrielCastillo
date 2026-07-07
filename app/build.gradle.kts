@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+    alias(libs.plugins.roborazzi)
 }
 
 android {
@@ -47,6 +48,12 @@ android {
     buildFeatures {
         compose = true
     }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 room {
@@ -85,6 +92,15 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
+
+    // Screenshot testing (JVM, via Robolectric + Roborazzi)
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.compose.ui.test.junit4)
+    testImplementation(libs.androidx.compose.ui.tooling)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
+    testImplementation(libs.roborazzi.junit.rule)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
