@@ -24,15 +24,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.urielcast.academytest2026.ui.theme.AcademyUrielCastilloTheme
 
 /**
- * Landing screen that lets the reviewer choose which build to explore:
- * the [Minimal][onOpenMinimal] 1:1 SwiftUI port, or the [Enhanced][onOpenEnhanced]
- * version. Both live in the same APK so it builds and runs once.
+ * Landing screen that lets the reviewer choose which build to explore: the
+ * [Minimal][onOpenMinimal] 1:1 SwiftUI port, the [Enhanced][onOpenEnhanced]
+ * version, or the [Cupertino][onOpenCupertino] iOS skin. All three live in the
+ * same APK so the project builds and runs once.
+ *
+ * Every card sits on the same readable surface and is differentiated by a tonal
+ * icon badge, so the text stays legible in both light and dark themes.
  */
 @Composable
 fun LauncherScreen(
@@ -44,15 +50,17 @@ fun LauncherScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.Center,
     ) {
         Text(
             text = "Item Manager",
             style = MaterialTheme.typography.displaySmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Text(
-            text = "SwiftUI → Jetpack Compose. Pick a version to explore.",
+            text = "A SwiftUI app, rebuilt for Android. Choose a version to explore.",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 8.dp),
@@ -63,29 +71,32 @@ fun LauncherScreen(
         VersionCard(
             icon = Icons.Outlined.Checklist,
             title = "Minimal",
-            subtitle = "Faithful 1:1 port of the original SwiftUI app. Exactly what the brief asks for.",
+            subtitle = "A faithful 1:1 port of the original SwiftUI app. Exactly what the brief asks for.",
             onClick = onOpenMinimal,
-            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            badgeColor = MaterialTheme.colorScheme.secondaryContainer,
+            onBadgeColor = MaterialTheme.colorScheme.onSecondaryContainer,
         )
 
-        Spacer(Modifier.size(16.dp))
+        Spacer(Modifier.size(14.dp))
 
         VersionCard(
             icon = Icons.Outlined.AutoAwesome,
             title = "Enhanced",
-            subtitle = "Our take: persistence, undo, search, adaptive panes, animations and i18n.",
+            subtitle = "Our take, with persistence, search, undo, adaptive layouts and animations.",
             onClick = onOpenEnhanced,
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            badgeColor = MaterialTheme.colorScheme.primaryContainer,
+            onBadgeColor = MaterialTheme.colorScheme.onPrimaryContainer,
         )
 
-        Spacer(Modifier.size(16.dp))
+        Spacer(Modifier.size(14.dp))
 
         VersionCard(
             icon = Icons.Outlined.PhoneIphone,
             title = "Cupertino",
-            subtitle = "How close can Compose get to iOS? A hand-built Cupertino skin of the same app.",
+            subtitle = "The same app, hand-skinned to look and feel like native iOS.",
             onClick = onOpenCupertino,
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            badgeColor = MaterialTheme.colorScheme.tertiaryContainer,
+            onBadgeColor = MaterialTheme.colorScheme.onTertiaryContainer,
         )
     }
 }
@@ -96,27 +107,30 @@ private fun VersionCard(
     title: String,
     subtitle: String,
     onClick: () -> Unit,
-    containerColor: androidx.compose.ui.graphics.Color,
+    badgeColor: Color,
+    onBadgeColor: Color,
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.elevatedCardColors(containerColor = containerColor),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+        ),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(18.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Surface(
                 shape = CircleShape,
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f),
+                color = badgeColor,
                 modifier = Modifier.size(48.dp),
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Icon(imageVector = icon, contentDescription = null)
+                    Icon(imageVector = icon, contentDescription = null, tint = onBadgeColor)
                 }
             }
 
@@ -125,17 +139,24 @@ private fun VersionCard(
                     .weight(1f)
                     .padding(horizontal = 16.dp),
             ) {
-                Text(text = title, style = MaterialTheme.typography.titleLarge)
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 2.dp),
                 )
             }
 
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                 contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
@@ -145,6 +166,14 @@ private fun VersionCard(
 @Composable
 private fun LauncherScreenPreview() {
     AcademyUrielCastilloTheme {
+        LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {})
+    }
+}
+
+@Preview(showBackground = true, heightDp = 720, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun LauncherScreenDarkPreview() {
+    AcademyUrielCastilloTheme(darkTheme = true) {
         LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {})
     }
 }

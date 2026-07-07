@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -48,7 +49,7 @@ fun CupertinoListScreen(
         title = CupertinoStrings.LIST_TITLE,
         modifier = modifier,
         trailing = {
-            CupertinoIconButton(
+            CupertinoGlassIconButton(
                 icon = Icons.Filled.Add,
                 contentDescription = CupertinoStrings.ADD_TITLE,
                 onClick = { showAddSheet = true },
@@ -71,7 +72,7 @@ fun CupertinoListScreen(
                             onToggleFavorite = { onToggleFavorite(item) },
                             onDelete = { onDelete(item) },
                         )
-                        if (index != items.lastIndex) CupertinoSeparator(startInset = 52)
+                        if (index != items.lastIndex) CupertinoSeparator(startInset = 16)
                     }
                 }
             }
@@ -121,9 +122,24 @@ private fun CupertinoItemCell(
         CupertinoRow(
             onClick = onClick,
             showChevron = true,
-            leading = { CupertinoFavoriteStar(item.isFavorite, onToggleFavorite) },
+            trailing = { CupertinoFavoriteStar(item.isFavorite, onToggleFavorite) },
         ) {
-            Text(text = item.name, color = colors.label, fontSize = 17.sp)
+            // Mirrors the SwiftUI ItemRowView: headline name over a caption that
+            // states the favorite state, with the star trailing.
+            Column(Modifier.padding(vertical = 8.dp)) {
+                Text(
+                    text = item.name,
+                    color = colors.label,
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+                Text(
+                    text = if (item.isFavorite) CupertinoStrings.FAVORITE else CupertinoStrings.NOT_FAVORITE,
+                    color = colors.secondaryLabel,
+                    fontSize = 13.sp,
+                    modifier = Modifier.padding(top = 2.dp),
+                )
+            }
         }
     }
 }

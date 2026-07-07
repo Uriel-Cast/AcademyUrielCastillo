@@ -13,7 +13,8 @@ internal object CupertinoStrings {
     const val SAVE = "Salva"
     const val DELETE = "Elimina"
     const val FAVORITE = "Preferito"
-    const val DETAILS = "Dettagli"
+    const val NOT_FAVORITE = "Non preferito"
+    const val SECTION_ITEM = "Oggetto"
     const val EMPTY_TITLE = "Nessun oggetto"
     const val EMPTY_DESCRIPTION = "Tocca + per aggiungere un oggetto."
 }

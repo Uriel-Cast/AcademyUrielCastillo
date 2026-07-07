@@ -12,9 +12,10 @@ import androidx.compose.material3.Text
 import com.urielcast.academytest2026.core.model.Item
 
 /**
- * iOS Form-style detail: a "Dettagli" group with the name and a favorite toggle,
- * and a destructive delete button in its own group. [showBackButton] is false
- * when shown as a pushed pane without its own chrome.
+ * iOS Form-style detail: an "Oggetto" group with the name and a favorite toggle,
+ * and a destructive delete button in its own group, mirroring the SwiftUI
+ * `Form { Section("Oggetto") { … } }`. [showBackButton] is false when shown as a
+ * pushed pane without its own chrome.
  */
 @Composable
 fun CupertinoDetailScreen(
@@ -37,7 +38,7 @@ fun CupertinoDetailScreen(
         },
     ) {
         item {
-            CupertinoSection(header = CupertinoStrings.DETAILS) {
+            CupertinoSection(header = CupertinoStrings.SECTION_ITEM) {
                 CupertinoRow(
                     trailing = { Text(item.name, color = colors.secondaryLabel, fontSize = 17.sp) },
                 ) {

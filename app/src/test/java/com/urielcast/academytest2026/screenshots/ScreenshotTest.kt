@@ -88,6 +88,11 @@ class ScreenshotTest {
     }
 
     @Test
+    fun launcherDark() = capture("launcher_dark", dark = true) {
+        LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {})
+    }
+
+    @Test
     fun minimalList() = capture("minimal_list") {
         MinimalItemsListScreen(
             items = sampleItems,

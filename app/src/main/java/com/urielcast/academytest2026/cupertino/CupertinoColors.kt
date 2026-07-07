@@ -22,6 +22,8 @@ data class CupertinoColors(
     val red: Color,
     val yellow: Color,
     val cellHighlight: Color,
+    /** Fill for the circular "liquid glass" toolbar button (iOS 26 style). */
+    val glassButton: Color,
     val isDark: Boolean,
 )
 
@@ -36,6 +38,7 @@ val LightCupertinoColors = CupertinoColors(
     red = Color(0xFFFF3B30),
     yellow = Color(0xFFFFCC00),
     cellHighlight = Color(0xFFD1D1D6),
+    glassButton = Color(0xFFFFFFFF),
     isDark = false,
 )
 
@@ -50,6 +53,7 @@ val DarkCupertinoColors = CupertinoColors(
     red = Color(0xFFFF453A),
     yellow = Color(0xFFFFD60A),
     cellHighlight = Color(0xFF2C2C2E),
+    glassButton = Color(0xFF2C2C2E),
     isDark = true,
 )
 
