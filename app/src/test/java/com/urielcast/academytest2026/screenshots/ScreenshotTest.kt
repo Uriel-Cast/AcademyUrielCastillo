@@ -93,6 +93,18 @@ class ScreenshotTest {
         LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {}, onOpenProfile = {})
     }
 
+    /**
+     * Landscape (wide, short) launcher: the content is taller than the viewport,
+     * so it must scroll rather than clip. Guards the landscape fix.
+     */
+    @Test
+    fun launcherLandscape() {
+        RuntimeEnvironment.setQualifiers("w891dp-h411dp-land")
+        capture("launcher_landscape") {
+            LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {}, onOpenProfile = {})
+        }
+    }
+
     @Test
     fun profileLight() = capture("profile_light") {
         ProfileScreen(onBack = {})

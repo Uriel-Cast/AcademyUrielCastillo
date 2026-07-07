@@ -3,14 +3,18 @@ package com.urielcast.academytest2026.shared
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.AutoAwesome
@@ -54,64 +58,72 @@ fun LauncherScreen(
     onOpenProfile: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp),
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Text(
-            text = "Item Manager",
-            style = MaterialTheme.typography.displaySmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        Text(
-            text = "A SwiftUI app, rebuilt for Android. Choose a version to explore.",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(top = 8.dp),
-        )
+    // Scrollable, but still vertically centered when there's room: the column is
+    // forced to at least the viewport height, so short (portrait) content centers
+    // while tall content (e.g. landscape) simply scrolls instead of clipping.
+    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+        val viewportHeight = maxHeight
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .heightIn(min = viewportHeight)
+                .padding(horizontal = 24.dp, vertical = 24.dp),
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text(
+                text = "Item Manager",
+                style = MaterialTheme.typography.displaySmall,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                text = "A SwiftUI app, rebuilt for Android. Choose a version to explore.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 8.dp),
+            )
 
-        Spacer(Modifier.size(32.dp))
+            Spacer(Modifier.size(32.dp))
 
-        VersionCard(
-            icon = Icons.Outlined.Checklist,
-            title = "Minimal",
-            subtitle = "A faithful 1:1 port of the original SwiftUI app. Exactly what the brief asks for.",
-            onClick = onOpenMinimal,
-            badgeColor = MaterialTheme.colorScheme.secondaryContainer,
-            onBadgeColor = MaterialTheme.colorScheme.onSecondaryContainer,
-        )
+            VersionCard(
+                icon = Icons.Outlined.Checklist,
+                title = "Minimal",
+                subtitle = "A faithful 1:1 port of the original SwiftUI app. Exactly what the brief asks for.",
+                onClick = onOpenMinimal,
+                badgeColor = MaterialTheme.colorScheme.secondaryContainer,
+                onBadgeColor = MaterialTheme.colorScheme.onSecondaryContainer,
+            )
 
-        Spacer(Modifier.size(14.dp))
+            Spacer(Modifier.size(14.dp))
 
-        VersionCard(
-            icon = Icons.Outlined.AutoAwesome,
-            title = "Enhanced",
-            subtitle = "Our take, with persistence, search, undo, adaptive layouts and animations.",
-            onClick = onOpenEnhanced,
-            badgeColor = MaterialTheme.colorScheme.primaryContainer,
-            onBadgeColor = MaterialTheme.colorScheme.onPrimaryContainer,
-        )
+            VersionCard(
+                icon = Icons.Outlined.AutoAwesome,
+                title = "Enhanced",
+                subtitle = "Our take, with persistence, search, undo, adaptive layouts and animations.",
+                onClick = onOpenEnhanced,
+                badgeColor = MaterialTheme.colorScheme.primaryContainer,
+                onBadgeColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
 
-        Spacer(Modifier.size(14.dp))
+            Spacer(Modifier.size(14.dp))
 
-        VersionCard(
-            icon = Icons.Outlined.PhoneIphone,
-            title = "Cupertino",
-            subtitle = "The same app, hand-skinned to look and feel like native iOS.",
-            onClick = onOpenCupertino,
-            badgeColor = MaterialTheme.colorScheme.tertiaryContainer,
-            onBadgeColor = MaterialTheme.colorScheme.onTertiaryContainer,
-        )
+            VersionCard(
+                icon = Icons.Outlined.PhoneIphone,
+                title = "Cupertino",
+                subtitle = "The same app, hand-skinned to look and feel like native iOS.",
+                onClick = onOpenCupertino,
+                badgeColor = MaterialTheme.colorScheme.tertiaryContainer,
+                onBadgeColor = MaterialTheme.colorScheme.onTertiaryContainer,
+            )
 
-        Spacer(Modifier.size(28.dp))
+            Spacer(Modifier.size(28.dp))
 
-        MeetTheDeveloperPill(
-            onClick = onOpenProfile,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-        )
+            MeetTheDeveloperPill(
+                onClick = onOpenProfile,
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            )
+        }
     }
 }
 
