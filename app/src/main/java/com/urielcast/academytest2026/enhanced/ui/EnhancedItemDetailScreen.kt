@@ -57,7 +57,14 @@ fun EnhancedItemDetailScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text(item.name, maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                title = {
+                    Text(
+                        item.name,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.sharedItemName(item.id),
+                    )
+                },
                 navigationIcon = {
                     if (showBackButton) {
                         IconButton(onClick = onBack) {

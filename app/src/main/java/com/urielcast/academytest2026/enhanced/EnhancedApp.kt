@@ -1,12 +1,15 @@
 package com.urielcast.academytest2026.enhanced
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -32,6 +35,7 @@ import com.urielcast.academytest2026.enhanced.ui.EnhancedItemsListScreen
 import com.urielcast.academytest2026.enhanced.ui.EnhancedItemsViewModel
 import com.urielcast.academytest2026.enhanced.ui.EnhancedListDetailScene
 import com.urielcast.academytest2026.enhanced.ui.LocalInTwoPaneScene
+import com.urielcast.academytest2026.enhanced.ui.LocalSharedTransitionScope
 import com.urielcast.academytest2026.enhanced.ui.rememberEnhancedListDetailSceneStrategy
 import com.urielcast.academytest2026.enhanced.settings.SettingsSheet
 import com.urielcast.academytest2026.enhanced.settings.SettingsViewModel
@@ -50,6 +54,7 @@ private data class EnhancedDetailRoute(val id: String) : NavKey
  * swipe or the detail screen) go through a shared Undo snackbar. The adaptive
  * list-detail layout is layered on in the adaptive pass.
  */
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun EnhancedApp(
     modifier: Modifier = Modifier,
@@ -79,10 +84,13 @@ fun EnhancedApp(
         }
     }
 
-    NavDisplay(
+    SharedTransitionLayout(modifier = modifier) {
+      val sharedScope = this
+      CompositionLocalProvider(LocalSharedTransitionScope provides sharedScope) {
+        NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
-        modifier = modifier,
+        sharedTransitionScope = sharedScope,
         sceneStrategies = listOf(listDetailStrategy),
         transitionSpec = {
             slideInHorizontally(animationSpec = tween(300), initialOffsetX = { it / 2 }) + fadeIn() togetherWith
@@ -139,7 +147,9 @@ fun EnhancedApp(
                 }
             }
         },
-    )
+        )
+      }
+    }
 
     BackHandler(enabled = backStack.size <= 1) { onExit() }
 

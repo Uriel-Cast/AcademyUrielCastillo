@@ -29,7 +29,11 @@ fun EnhancedItemRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.padding(start = 4.dp).weight(1f)) {
-            Text(text = item.name, style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = item.name,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.sharedItemName(item.id),
+            )
             Text(
                 text = stringResource(
                     if (item.isFavorite) R.string.enh_favorite else R.string.enh_not_favorite
