@@ -1,6 +1,12 @@
 package com.urielcast.academytest2026.enhanced
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -24,6 +30,9 @@ import com.urielcast.academytest2026.core.model.Item
 import com.urielcast.academytest2026.enhanced.ui.EnhancedItemDetailScreen
 import com.urielcast.academytest2026.enhanced.ui.EnhancedItemsListScreen
 import com.urielcast.academytest2026.enhanced.ui.EnhancedItemsViewModel
+import com.urielcast.academytest2026.enhanced.ui.EnhancedListDetailScene
+import com.urielcast.academytest2026.enhanced.ui.LocalInTwoPaneScene
+import com.urielcast.academytest2026.enhanced.ui.rememberEnhancedListDetailSceneStrategy
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -47,6 +56,7 @@ fun EnhancedApp(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val backStack = rememberNavBackStack(EnhancedListRoute)
+    val listDetailStrategy = rememberEnhancedListDetailSceneStrategy<NavKey>()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -69,8 +79,21 @@ fun EnhancedApp(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
         modifier = modifier,
+        sceneStrategies = listOf(listDetailStrategy),
+        transitionSpec = {
+            slideInHorizontally(animationSpec = tween(300), initialOffsetX = { it / 2 }) + fadeIn() togetherWith
+                fadeOut(tween(300))
+        },
+        popTransitionSpec = {
+            fadeIn(tween(300)) togetherWith
+                slideOutHorizontally(animationSpec = tween(300), targetOffsetX = { it / 2 }) + fadeOut()
+        },
+        predictivePopTransitionSpec = {
+            fadeIn(tween(300)) togetherWith
+                slideOutHorizontally(animationSpec = tween(300), targetOffsetX = { it / 2 }) + fadeOut()
+        },
         entryProvider = entryProvider {
-            entry<EnhancedListRoute> {
+            entry<EnhancedListRoute>(metadata = EnhancedListDetailScene.listPane()) {
                 EnhancedItemsListScreen(
                     state = state,
                     snackbarHostState = snackbarHostState,
@@ -83,7 +106,7 @@ fun EnhancedApp(
                 )
             }
 
-            entry<EnhancedDetailRoute> { route ->
+            entry<EnhancedDetailRoute>(metadata = EnhancedListDetailScene.detailPane()) { route ->
                 val item by remember(route.id) { viewModel.observeItem(route.id) }
                     .collectAsStateWithLifecycle(initialValue = null)
 
@@ -105,6 +128,8 @@ fun EnhancedApp(
                             backStack.removeLastOrNull()
                         },
                         onBack = { backStack.removeLastOrNull() },
+                        // No back arrow when shown next to the list on a wide screen.
+                        showBackButton = !LocalInTwoPaneScene.current,
                     )
                 }
             }
