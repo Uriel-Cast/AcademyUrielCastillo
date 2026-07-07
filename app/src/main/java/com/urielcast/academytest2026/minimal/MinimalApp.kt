@@ -1,5 +1,6 @@
 package com.urielcast.academytest2026.minimal
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,6 +28,7 @@ private data class MinimalDetailRoute(val id: String) : NavKey
 @Composable
 fun MinimalApp(
     modifier: Modifier = Modifier,
+    onExit: () -> Unit = {},
     viewModel: MinimalItemsViewModel = viewModel(),
 ) {
     val backStack = rememberNavBackStack(MinimalListRoute)
@@ -67,4 +69,9 @@ fun MinimalApp(
             }
         },
     )
+
+    // At the root of this version, Back returns to the launcher rather than
+    // popping an empty stack. Composed after NavDisplay so it takes priority
+    // only when it is enabled (i.e. nothing left for NavDisplay to pop).
+    BackHandler(enabled = backStack.size <= 1) { onExit() }
 }
