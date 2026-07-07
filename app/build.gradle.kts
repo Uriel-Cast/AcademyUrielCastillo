@@ -29,11 +29,15 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Signed with the debug key so the optimized build is runnable out of
+            // the box for this take-home (no keystore needed to try `installRelease`).
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
