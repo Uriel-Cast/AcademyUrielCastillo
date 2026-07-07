@@ -5,15 +5,16 @@ Jetpack Compose. The app displays a sorted list of items (each with a name and a
 favorite state) plus a detail screen, and every change is reflected everywhere
 automatically.
 
-The repository ships **two versions in a single app**, selected from a launcher
+The repository ships **three versions in a single app**, selected from a launcher
 screen:
 
 | | What it is |
 |---|---|
 | **Minimal** | A faithful 1:1 port of the original SwiftUI app — exactly what the brief asks for, in Italian, in-memory. |
 | **Enhanced** | Our take: the same app, persisted and considerably more polished (adaptive panes, undo, search, animations, i18n, …). |
+| **Cupertino** | The same app, hand-skinned to look and feel like native iOS — "how close can Compose get to iOS?" |
 
-Both are built from a small shared core, so they can be compared side by side.
+All three are built from a small shared core, so they can be compared side by side.
 
 ---
 
@@ -29,7 +30,7 @@ Steps:
 
 1. Open the project and let Gradle sync.
 2. Run the `app` configuration.
-3. On launch, pick **Minimal** or **Enhanced**.
+3. On launch, pick **Minimal**, **Enhanced** or **Cupertino**.
 4. To see the **adaptive two-pane** layout, run on a tablet/foldable **or rotate a
    phone to landscape** — the Enhanced version splits into list + detail.
 
@@ -39,7 +40,7 @@ Steps:
 
 ---
 
-## The two versions
+## The three versions
 
 ### Minimal — `com.urielcast.academytest2026.minimal`
 
@@ -69,6 +70,28 @@ Everything Minimal does, made persistent and production-flavoured:
 - **Predictive back** (via Navigation 3 transition specs).
 - **Dark theme** toggle and **language switch** (Italian / English / Spanish),
   persisted with DataStore.
+
+### Cupertino — `com.urielcast.academytest2026.cupertino`
+
+The same app, hand-built to look and feel like native iOS (no third-party
+Cupertino library — everything is drawn from scratch with Compose primitives):
+
+- **iOS system palette** (`#F2F2F7` grouped background, `#007AFF` blue, …) in
+  light and dark, independent of the Material color scheme, with no ripple —
+  cells highlight on press like iOS.
+- **Large collapsing title** — the 34sp title scrolls with the content and
+  collapses into a centered inline title with a hairline, the signature iOS
+  navigation bar.
+- **Inset grouped lists** (rounded sections, 16dp-inset separators, disclosure
+  chevrons) and a **Form-style detail**.
+- **iOS push/pop navigation** — the incoming screen slides in from the right
+  while the previous one parallaxes out; a **‹ Oggetti** back button; the
+  predictive-back gesture drives the pop.
+- **iOS-style add sheet** (grabber, blue *Annulla* / *Salva*) and full-swipe red
+  **Elimina** delete.
+
+A deliberate range piece: the Enhanced version fully embraces Material, while this
+one shows how faithfully Compose can reproduce the other platform's look.
 
 ---
 

@@ -10,6 +10,9 @@ import androidx.compose.ui.test.onRoot
 import com.github.takahirom.roborazzi.RoborazziRule
 import com.github.takahirom.roborazzi.captureRoboImage
 import com.urielcast.academytest2026.core.model.Item
+import com.urielcast.academytest2026.cupertino.CupertinoDetailScreen
+import com.urielcast.academytest2026.cupertino.CupertinoListScreen
+import com.urielcast.academytest2026.cupertino.CupertinoTheme
 import com.urielcast.academytest2026.enhanced.ui.EnhancedItemDetailScreen
 import com.urielcast.academytest2026.enhanced.ui.EnhancedItemsListScreen
 import com.urielcast.academytest2026.enhanced.ui.EnhancedUiState
@@ -72,9 +75,16 @@ class ScreenshotTest {
         composeRule.onRoot().captureRoboImage("src/test/screenshots/$name.png")
     }
 
+    private fun captureCupertino(name: String, dark: Boolean = false, content: @Composable () -> Unit) {
+        composeRule.setContent {
+            CupertinoTheme(dark = dark) { content() }
+        }
+        composeRule.onRoot().captureRoboImage("src/test/screenshots/$name.png")
+    }
+
     @Test
     fun launcher() = capture("launcher") {
-        LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {})
+        LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {})
     }
 
     @Test
@@ -134,6 +144,35 @@ class ScreenshotTest {
     fun enhancedListSpanish() {
         RuntimeEnvironment.setQualifiers("+es")
         capture("enhanced_list_es") { EnhancedList() }
+    }
+
+    // --- Cupertino ---
+
+    @Test
+    fun cupertinoListLight() = captureCupertino("cupertino_list_light") { CupertinoList() }
+
+    @Test
+    fun cupertinoListDark() = captureCupertino("cupertino_list_dark", dark = true) { CupertinoList() }
+
+    @Test
+    fun cupertinoDetail() = captureCupertino("cupertino_detail") {
+        CupertinoDetailScreen(
+            item = Item("3", 2, "Lupo 🐺", isFavorite = true),
+            onToggleFavorite = {},
+            onDelete = {},
+            onBack = {},
+        )
+    }
+
+    @Composable
+    private fun CupertinoList() {
+        CupertinoListScreen(
+            items = sampleItems,
+            onItemClick = {},
+            onToggleFavorite = {},
+            onAddItem = {},
+            onDelete = {},
+        )
     }
 
     @Composable
