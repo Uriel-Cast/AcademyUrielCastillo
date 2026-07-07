@@ -38,6 +38,18 @@
     <string name="enh_language">Idioma</string>
     <string name="enh_language_system">Predeterminado del sistema</string>
 
+    <string name="enh_presets_title">Listas de ejemplo</string>
+    <string name="enh_load_examples">Cargar ejemplos</string>
+    <string name="enh_preset_animals">Animales</string>
+    <string name="enh_preset_groceries">Compras</string>
+    <string name="enh_preset_books">Libros</string>
+    <string name="enh_preset_travel">Viaje</string>
+
+    <plurals name="enh_items_added">
+        <item quantity="one">Añadido %1$d objeto</item>
+        <item quantity="other">Añadidos %1$d objetos</item>
+    </plurals>
+
     <plurals name="enh_item_count">
         <item quantity="one">%1$d objeto</item>
         <item quantity="other">%1$d objetos</item>

@@ -21,6 +21,13 @@ interface ItemsRepository {
     /** Adds a new item and returns it (name is trimmed by the caller). */
     suspend fun addItem(name: String): Item
 
+    /**
+     * Adds several items in one batch with sequential creation indices, and
+     * returns them. Used to load a preset list; the returned items let the
+     * caller offer Undo.
+     */
+    suspend fun addAll(names: List<String>): List<Item>
+
     suspend fun setFavorite(id: String, isFavorite: Boolean)
 
     suspend fun rename(id: String, name: String)

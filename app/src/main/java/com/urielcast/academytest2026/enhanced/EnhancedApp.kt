@@ -30,6 +30,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import com.urielcast.academytest2026.R
 import com.urielcast.academytest2026.core.model.Item
+import com.urielcast.academytest2026.enhanced.data.ItemPreset
 import com.urielcast.academytest2026.enhanced.ui.EnhancedItemDetailScreen
 import com.urielcast.academytest2026.enhanced.ui.EnhancedItemsListScreen
 import com.urielcast.academytest2026.enhanced.ui.EnhancedItemsViewModel
@@ -84,6 +85,21 @@ fun EnhancedApp(
         }
     }
 
+    fun loadPresetWithUndo(preset: ItemPreset) {
+        scope.launch {
+            val added = viewModel.loadPreset(preset)
+            if (added.isEmpty()) return@launch
+            val result = snackbarHostState.showSnackbar(
+                message = context.resources.getQuantityString(
+                    R.plurals.enh_items_added, added.size, added.size,
+                ),
+                actionLabel = context.getString(R.string.enh_undo),
+                duration = SnackbarDuration.Long,
+            )
+            if (result == SnackbarResult.ActionPerformed) viewModel.removeItems(added)
+        }
+    }
+
     SharedTransitionLayout(modifier = modifier) {
       val sharedScope = this
       CompositionLocalProvider(LocalSharedTransitionScope provides sharedScope) {
@@ -115,6 +131,7 @@ fun EnhancedApp(
                     onDeleteItem = { deleteWithUndo(it) },
                     onQueryChange = viewModel::setQuery,
                     onFilterChange = viewModel::setFilter,
+                    onLoadPreset = { loadPresetWithUndo(it) },
                     onOpenSettings = { showSettings = true },
                 )
             }

@@ -8,12 +8,14 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.urielcast.academytest2026.AcademyApplication
 import com.urielcast.academytest2026.core.model.Item
 import com.urielcast.academytest2026.core.model.sortedForDisplay
+import com.urielcast.academytest2026.enhanced.data.ItemPreset
 import com.urielcast.academytest2026.enhanced.data.ItemsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -79,6 +81,23 @@ class EnhancedItemsViewModel(private val repository: ItemsRepository) : ViewMode
     /** Restores a previously deleted item — powers the Undo snackbar. */
     fun restore(item: Item) {
         viewModelScope.launch { repository.restore(listOf(item)) }
+    }
+
+    /**
+     * Loads a [preset], skipping names that already exist (case-insensitive),
+     * and returns the items actually added so the caller can offer Undo.
+     */
+    suspend fun loadPreset(preset: ItemPreset): List<Item> {
+        val existing = repository.observeItems().first()
+            .map { it.name.trim().lowercase() }
+            .toSet()
+        val toAdd = preset.itemNames.filter { it.trim().lowercase() !in existing }
+        return if (toAdd.isEmpty()) emptyList() else repository.addAll(toAdd)
+    }
+
+    /** Removes the given items — used to undo a preset load. */
+    fun removeItems(items: List<Item>) {
+        if (items.isNotEmpty()) viewModelScope.launch { repository.delete(items.map { it.id }) }
     }
 
     companion object {

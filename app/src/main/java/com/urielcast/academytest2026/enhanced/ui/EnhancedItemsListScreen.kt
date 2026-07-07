@@ -17,9 +17,11 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Inbox
+import androidx.compose.material.icons.outlined.LibraryAdd
 import androidx.compose.material.icons.outlined.SearchOff
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -55,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.LaunchedEffect
 import com.urielcast.academytest2026.R
 import com.urielcast.academytest2026.core.model.Item
+import com.urielcast.academytest2026.enhanced.data.ItemPreset
 import com.urielcast.academytest2026.ui.theme.AcademyUrielCastilloTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,10 +71,12 @@ fun EnhancedItemsListScreen(
     onDeleteItem: (Item) -> Unit,
     onQueryChange: (String) -> Unit,
     onFilterChange: (ItemFilter) -> Unit,
+    onLoadPreset: (ItemPreset) -> Unit,
     onOpenSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showAddSheet by remember { mutableStateOf(false) }
+    var showPresetSheet by remember { mutableStateOf(false) }
     var searchActive by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -102,6 +107,12 @@ fun EnhancedItemsListScreen(
                         IconButton(onClick = { searchActive = true }) {
                             Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.enh_search))
                         }
+                        IconButton(onClick = { showPresetSheet = true }) {
+                            Icon(
+                                Icons.Outlined.LibraryAdd,
+                                contentDescription = stringResource(R.string.enh_presets_title),
+                            )
+                        }
                         IconButton(onClick = onOpenSettings) {
                             Icon(Icons.Outlined.Settings, contentDescription = stringResource(R.string.enh_settings))
                         }
@@ -124,7 +135,11 @@ fun EnhancedItemsListScreen(
             FilterChips(selected = state.filter, onFilterChange = onFilterChange)
 
             if (state.isEmpty) {
-                EnhancedEmptyState(state = state, modifier = Modifier.fillMaxSize())
+                EnhancedEmptyState(
+                    state = state,
+                    onLoadExamples = { showPresetSheet = true },
+                    modifier = Modifier.fillMaxSize(),
+                )
             } else {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(state.items, key = { it.id }) { item ->
@@ -148,6 +163,16 @@ fun EnhancedItemsListScreen(
                 onAddItem(name)
                 showAddSheet = false
             },
+        )
+    }
+
+    if (showPresetSheet) {
+        PresetPickerSheet(
+            onSelect = { preset ->
+                onLoadPreset(preset)
+                showPresetSheet = false
+            },
+            onDismiss = { showPresetSheet = false },
         )
     }
 }
@@ -271,6 +296,7 @@ private fun itemCountSummary(total: Int, favorites: Int): String {
 @Composable
 private fun EnhancedEmptyState(
     state: EnhancedUiState,
+    onLoadExamples: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val filtering = state.isFiltering
@@ -303,6 +329,22 @@ private fun EnhancedEmptyState(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 4.dp),
         )
+
+        // Only offer the presets on the genuinely-empty list, not on an empty
+        // search/filter result.
+        if (!filtering) {
+            FilledTonalButton(
+                onClick = onLoadExamples,
+                modifier = Modifier.padding(top = 20.dp),
+            ) {
+                Icon(
+                    Icons.Outlined.LibraryAdd,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp),
+                )
+                Text(stringResource(R.string.enh_load_examples))
+            }
+        }
     }
 }
 
@@ -328,6 +370,7 @@ private fun EnhancedItemsListScreenPreview() {
             onDeleteItem = {},
             onQueryChange = {},
             onFilterChange = {},
+            onLoadPreset = {},
             onOpenSettings = {},
         )
     }

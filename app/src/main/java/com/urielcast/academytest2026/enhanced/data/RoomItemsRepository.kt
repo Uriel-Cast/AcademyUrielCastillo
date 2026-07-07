@@ -32,6 +32,22 @@ class RoomItemsRepository(private val dao: ItemDao) : ItemsRepository {
         return item
     }
 
+    override suspend fun addAll(names: List<String>): List<Item> {
+        if (names.isEmpty()) return emptyList()
+
+        var nextIndex = (dao.maxCreationIndex() ?: -1) + 1
+        val items = names.map { name ->
+            Item(
+                id = UUID.randomUUID().toString(),
+                creationIndex = nextIndex++,
+                name = name.trim(),
+                isFavorite = false,
+            )
+        }
+        dao.insertAll(items.map { it.toEntity() })
+        return items
+    }
+
     override suspend fun setFavorite(id: String, isFavorite: Boolean) =
         dao.setFavorite(id, isFavorite)
 
