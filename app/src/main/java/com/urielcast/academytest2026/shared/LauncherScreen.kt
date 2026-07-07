@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Checklist
+import androidx.compose.material.icons.outlined.PhoneIphone
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -37,6 +38,7 @@ import com.urielcast.academytest2026.ui.theme.AcademyUrielCastilloTheme
 fun LauncherScreen(
     onOpenMinimal: () -> Unit,
     onOpenEnhanced: () -> Unit,
+    onOpenCupertino: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -74,6 +76,16 @@ fun LauncherScreen(
             subtitle = "Our take: persistence, undo, search, adaptive panes, animations and i18n.",
             onClick = onOpenEnhanced,
             containerColor = MaterialTheme.colorScheme.primaryContainer,
+        )
+
+        Spacer(Modifier.size(16.dp))
+
+        VersionCard(
+            icon = Icons.Outlined.PhoneIphone,
+            title = "Cupertino",
+            subtitle = "How close can Compose get to iOS? A hand-built Cupertino skin of the same app.",
+            onClick = onOpenCupertino,
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
         )
     }
 }
@@ -133,6 +145,6 @@ private fun VersionCard(
 @Composable
 private fun LauncherScreenPreview() {
     AcademyUrielCastilloTheme {
-        LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {})
+        LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {})
     }
 }

@@ -6,11 +6,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.urielcast.academytest2026.cupertino.CupertinoApp
 import com.urielcast.academytest2026.enhanced.EnhancedApp
 import com.urielcast.academytest2026.minimal.MinimalApp
 import com.urielcast.academytest2026.shared.LauncherScreen
 
-private enum class AppSection { Launcher, Minimal, Enhanced }
+private enum class AppSection { Launcher, Minimal, Enhanced, Cupertino }
 
 /**
  * Top-level shell. Shows the launcher, then hands the whole screen to whichever
@@ -25,6 +26,7 @@ fun RootApp(modifier: Modifier = Modifier) {
         AppSection.Launcher -> LauncherScreen(
             onOpenMinimal = { section = AppSection.Minimal },
             onOpenEnhanced = { section = AppSection.Enhanced },
+            onOpenCupertino = { section = AppSection.Cupertino },
             modifier = modifier,
         )
 
@@ -34,6 +36,11 @@ fun RootApp(modifier: Modifier = Modifier) {
         )
 
         AppSection.Enhanced -> EnhancedApp(
+            modifier = modifier,
+            onExit = { section = AppSection.Launcher },
+        )
+
+        AppSection.Cupertino -> CupertinoApp(
             modifier = modifier,
             onExit = { section = AppSection.Launcher },
         )
