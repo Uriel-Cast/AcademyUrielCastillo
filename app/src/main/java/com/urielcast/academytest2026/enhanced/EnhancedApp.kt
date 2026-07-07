@@ -33,6 +33,8 @@ import com.urielcast.academytest2026.enhanced.ui.EnhancedItemsViewModel
 import com.urielcast.academytest2026.enhanced.ui.EnhancedListDetailScene
 import com.urielcast.academytest2026.enhanced.ui.LocalInTwoPaneScene
 import com.urielcast.academytest2026.enhanced.ui.rememberEnhancedListDetailSceneStrategy
+import com.urielcast.academytest2026.enhanced.settings.SettingsSheet
+import com.urielcast.academytest2026.enhanced.settings.SettingsViewModel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -61,6 +63,8 @@ fun EnhancedApp(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+
+    var showSettings by remember { mutableStateOf(false) }
 
     fun deleteWithUndo(item: Item) {
         viewModel.delete(item)
@@ -103,6 +107,7 @@ fun EnhancedApp(
                     onDeleteItem = { deleteWithUndo(it) },
                     onQueryChange = viewModel::setQuery,
                     onFilterChange = viewModel::setFilter,
+                    onOpenSettings = { showSettings = true },
                 )
             }
 
@@ -137,4 +142,15 @@ fun EnhancedApp(
     )
 
     BackHandler(enabled = backStack.size <= 1) { onExit() }
+
+    if (showSettings) {
+        val settingsViewModel: SettingsViewModel = viewModel(factory = SettingsViewModel.Factory)
+        val settings by settingsViewModel.settings.collectAsStateWithLifecycle()
+        SettingsSheet(
+            settings = settings,
+            onThemeChange = settingsViewModel::setTheme,
+            onLanguageChange = settingsViewModel::setLanguage,
+            onDismiss = { showSettings = false },
+        )
+    }
 }

@@ -1,0 +1,49 @@
+<resources>
+    <!-- Enhanced version — Spanish -->
+    <string name="enh_title">Objetos</string>
+    <string name="enh_add_item">Añadir objeto</string>
+    <string name="enh_new_item">Nuevo objeto</string>
+    <string name="enh_name">Nombre</string>
+    <string name="enh_cancel">Cancelar</string>
+    <string name="enh_save">Guardar</string>
+    <string name="enh_favorite">Favorito</string>
+    <string name="enh_not_favorite">No favorito</string>
+    <string name="enh_add_to_favorites">Añadir a favoritos</string>
+    <string name="enh_remove_from_favorites">Quitar de favoritos</string>
+    <string name="enh_item_section">Objeto</string>
+    <string name="enh_delete">Eliminar</string>
+    <string name="enh_back">Atrás</string>
+
+    <string name="enh_empty_title">Sin objetos</string>
+    <string name="enh_empty_description">Añade tu primer objeto con el botón +.</string>
+    <string name="enh_empty_search_title">Sin resultados</string>
+    <string name="enh_empty_search_description">Ningún objeto coincide con «%1$s».</string>
+
+    <string name="enh_search">Buscar</string>
+    <string name="enh_close_search">Cerrar búsqueda</string>
+    <string name="enh_filter_all">Todos</string>
+    <string name="enh_filter_favorites">Favoritos</string>
+
+    <string name="enh_item_deleted">Eliminado «%1$s»</string>
+    <string name="enh_undo">Deshacer</string>
+
+    <string name="enh_choose_item">Selecciona un objeto para ver sus detalles.</string>
+    <string name="enh_edit_name">Editar nombre</string>
+
+    <string name="enh_settings">Ajustes</string>
+    <string name="enh_theme">Tema</string>
+    <string name="enh_theme_system">Sistema</string>
+    <string name="enh_theme_light">Claro</string>
+    <string name="enh_theme_dark">Oscuro</string>
+    <string name="enh_language">Idioma</string>
+    <string name="enh_language_system">Predeterminado del sistema</string>
+
+    <plurals name="enh_item_count">
+        <item quantity="one">%1$d objeto</item>
+        <item quantity="other">%1$d objetos</item>
+    </plurals>
+    <plurals name="enh_favorite_count">
+        <item quantity="one">%1$d favorito</item>
+        <item quantity="other">%1$d favoritos</item>
+    </plurals>
+</resources>

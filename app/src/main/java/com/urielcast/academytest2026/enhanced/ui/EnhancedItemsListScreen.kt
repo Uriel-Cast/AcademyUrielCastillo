@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Inbox
 import androidx.compose.material.icons.outlined.SearchOff
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
@@ -67,6 +68,7 @@ fun EnhancedItemsListScreen(
     onDeleteItem: (Item) -> Unit,
     onQueryChange: (String) -> Unit,
     onFilterChange: (ItemFilter) -> Unit,
+    onOpenSettings: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showAddSheet by remember { mutableStateOf(false) }
@@ -99,6 +101,9 @@ fun EnhancedItemsListScreen(
                     actions = {
                         IconButton(onClick = { searchActive = true }) {
                             Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.enh_search))
+                        }
+                        IconButton(onClick = onOpenSettings) {
+                            Icon(Icons.Outlined.Settings, contentDescription = stringResource(R.string.enh_settings))
                         }
                     },
                 )
@@ -323,6 +328,7 @@ private fun EnhancedItemsListScreenPreview() {
             onDeleteItem = {},
             onQueryChange = {},
             onFilterChange = {},
+            onOpenSettings = {},
         )
     }
 }
