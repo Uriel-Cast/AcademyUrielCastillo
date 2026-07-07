@@ -1,5 +1,6 @@
 package com.urielcast.academytest2026.shared
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,11 +25,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.urielcast.academytest2026.R
 import com.urielcast.academytest2026.ui.theme.AcademyUrielCastilloTheme
 
 /**
@@ -38,13 +43,15 @@ import com.urielcast.academytest2026.ui.theme.AcademyUrielCastilloTheme
  * same APK so the project builds and runs once.
  *
  * Every card sits on the same readable surface and is differentiated by a tonal
- * icon badge, so the text stays legible in both light and dark themes.
+ * icon badge, so the text stays legible in both light and dark themes. A small
+ * pill at the bottom leads to the [developer profile][onOpenProfile].
  */
 @Composable
 fun LauncherScreen(
     onOpenMinimal: () -> Unit,
     onOpenEnhanced: () -> Unit,
     onOpenCupertino: () -> Unit,
+    onOpenProfile: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -98,6 +105,47 @@ fun LauncherScreen(
             badgeColor = MaterialTheme.colorScheme.tertiaryContainer,
             onBadgeColor = MaterialTheme.colorScheme.onTertiaryContainer,
         )
+
+        Spacer(Modifier.size(28.dp))
+
+        MeetTheDeveloperPill(
+            onClick = onOpenProfile,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+        )
+    }
+}
+
+/** Friendly pill inviting the reviewer to meet the person behind the project. */
+@Composable
+private fun MeetTheDeveloperPill(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        onClick = onClick,
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        modifier = modifier,
+    ) {
+        Row(
+            modifier = Modifier.padding(start = 6.dp, end = 14.dp, top = 6.dp, bottom = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Image(
+                painter = painterResource(R.drawable.profile_photo),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(32.dp)
+                    .clip(CircleShape),
+            )
+            Text(
+                text = "Want to meet the person behind this?",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(start = 10.dp),
+            )
+        }
     }
 }
 
@@ -162,18 +210,18 @@ private fun VersionCard(
     }
 }
 
-@Preview(showBackground = true, heightDp = 720)
+@Preview(showBackground = true, heightDp = 780)
 @Composable
 private fun LauncherScreenPreview() {
     AcademyUrielCastilloTheme {
-        LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {})
+        LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {}, onOpenProfile = {})
     }
 }
 
-@Preview(showBackground = true, heightDp = 720, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, heightDp = 780, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun LauncherScreenDarkPreview() {
     AcademyUrielCastilloTheme(darkTheme = true) {
-        LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {})
+        LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {}, onOpenProfile = {})
     }
 }

@@ -19,6 +19,7 @@ import com.urielcast.academytest2026.enhanced.ui.EnhancedUiState
 import com.urielcast.academytest2026.minimal.MinimalItemDetailScreen
 import com.urielcast.academytest2026.minimal.MinimalItemsListScreen
 import com.urielcast.academytest2026.shared.LauncherScreen
+import com.urielcast.academytest2026.shared.ProfileScreen
 import com.urielcast.academytest2026.ui.theme.AcademyUrielCastilloTheme
 import org.junit.Rule
 import org.junit.Test
@@ -84,12 +85,22 @@ class ScreenshotTest {
 
     @Test
     fun launcher() = capture("launcher") {
-        LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {})
+        LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {}, onOpenProfile = {})
     }
 
     @Test
     fun launcherDark() = capture("launcher_dark", dark = true) {
-        LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {})
+        LauncherScreen(onOpenMinimal = {}, onOpenEnhanced = {}, onOpenCupertino = {}, onOpenProfile = {})
+    }
+
+    @Test
+    fun profileLight() = capture("profile_light") {
+        ProfileScreen(onBack = {})
+    }
+
+    @Test
+    fun profileDark() = capture("profile_dark", dark = true) {
+        ProfileScreen(onBack = {})
     }
 
     @Test

@@ -15,6 +15,8 @@ screen:
 | **Cupertino** | The same app, hand-skinned to look and feel like native iOS — "how close can Compose get to iOS?" |
 
 All three are built from a small shared core, so they can be compared side by side.
+The launcher also links to a small **About the developer** screen, in case you want
+to meet the person behind the project.
 
 ---
 

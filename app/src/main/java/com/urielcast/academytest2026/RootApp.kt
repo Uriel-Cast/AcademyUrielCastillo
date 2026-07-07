@@ -10,8 +10,9 @@ import com.urielcast.academytest2026.cupertino.CupertinoApp
 import com.urielcast.academytest2026.enhanced.EnhancedApp
 import com.urielcast.academytest2026.minimal.MinimalApp
 import com.urielcast.academytest2026.shared.LauncherScreen
+import com.urielcast.academytest2026.shared.ProfileScreen
 
-private enum class AppSection { Launcher, Minimal, Enhanced, Cupertino }
+private enum class AppSection { Launcher, Minimal, Enhanced, Cupertino, Profile }
 
 /**
  * Top-level shell. Shows the launcher, then hands the whole screen to whichever
@@ -27,6 +28,7 @@ fun RootApp(modifier: Modifier = Modifier) {
             onOpenMinimal = { section = AppSection.Minimal },
             onOpenEnhanced = { section = AppSection.Enhanced },
             onOpenCupertino = { section = AppSection.Cupertino },
+            onOpenProfile = { section = AppSection.Profile },
             modifier = modifier,
         )
 
@@ -43,6 +45,11 @@ fun RootApp(modifier: Modifier = Modifier) {
         AppSection.Cupertino -> CupertinoApp(
             modifier = modifier,
             onExit = { section = AppSection.Launcher },
+        )
+
+        AppSection.Profile -> ProfileScreen(
+            onBack = { section = AppSection.Launcher },
+            modifier = modifier,
         )
     }
 }
