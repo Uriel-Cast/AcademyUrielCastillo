@@ -1,6 +1,7 @@
 package com.urielcast.academytest2026.enhanced
 
 import com.urielcast.academytest2026.core.model.Item
+import com.urielcast.academytest2026.enhanced.data.ItemPreset
 import com.urielcast.academytest2026.enhanced.ui.EnhancedItemsViewModel
 import com.urielcast.academytest2026.enhanced.ui.ItemFilter
 import com.urielcast.academytest2026.testutil.FakeItemsRepository
@@ -102,5 +103,51 @@ class EnhancedItemsViewModelTest {
         advanceUntilIdle()
 
         assertEquals(listOf("Lupo"), vm.uiState.value.items.map { it.name })
+    }
+
+    private val animalsPreset = ItemPreset(
+        id = "animals",
+        titleRes = 0,
+        emoji = "🦁",
+        itemNames = listOf("Elefante", "Tigre", "Volpe"),
+    )
+
+    @Test
+    fun `loading a preset adds all its items`() = runTest {
+        val vm = EnhancedItemsViewModel(FakeItemsRepository(listOf(item(0, "Gatto"))))
+        collectUiState(vm)
+
+        val added = vm.loadPreset(animalsPreset)
+        advanceUntilIdle()
+
+        assertEquals(3, added.size)
+        assertEquals(4, vm.uiState.value.totalCount)
+    }
+
+    @Test
+    fun `loading a preset skips names already present, case-insensitively`() = runTest {
+        val vm = EnhancedItemsViewModel(FakeItemsRepository(listOf(item(0, "elefante"))))
+        collectUiState(vm)
+
+        val added = vm.loadPreset(animalsPreset)
+        advanceUntilIdle()
+
+        assertEquals(listOf("Tigre", "Volpe"), added.map { it.name })
+        assertEquals(3, vm.uiState.value.totalCount)
+    }
+
+    @Test
+    fun `removeItems undoes a preset load`() = runTest {
+        val vm = EnhancedItemsViewModel(FakeItemsRepository(listOf(item(0, "Gatto"))))
+        collectUiState(vm)
+
+        val added = vm.loadPreset(animalsPreset)
+        advanceUntilIdle()
+        assertEquals(4, vm.uiState.value.totalCount)
+
+        vm.removeItems(added)
+        advanceUntilIdle()
+
+        assertEquals(1, vm.uiState.value.totalCount)
     }
 }

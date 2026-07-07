@@ -32,6 +32,15 @@ class FakeItemsRepository(initial: List<Item> = emptyList()) : ItemsRepository {
         return item
     }
 
+    override suspend fun addAll(names: List<String>): List<Item> {
+        if (names.isEmpty()) return emptyList()
+        val added = names.map { name ->
+            Item(id = "id-${nextIndex}", creationIndex = nextIndex++, name = name.trim(), isFavorite = false)
+        }
+        items.update { it + added }
+        return added
+    }
+
     override suspend fun setFavorite(id: String, isFavorite: Boolean) {
         items.update { list -> list.map { if (it.id == id) it.copy(isFavorite = isFavorite) else it } }
     }
