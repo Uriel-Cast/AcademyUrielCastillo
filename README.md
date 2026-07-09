@@ -1,180 +1,240 @@
 # Item Manager — SwiftUI → Jetpack Compose
 
-An Android port of the SwiftUI item-management app, written in Kotlin with
-Jetpack Compose. The app displays a sorted list of items (each with a name and a
-favorite state) plus a detail screen, and every change is reflected everywhere
-automatically.
+An Android port of a SwiftUI item-management app, built with **Kotlin** and **Jetpack Compose**.
 
-The repository ships **three versions in a single app**, selected from a launcher
-screen:
+The app manages a sorted list of items with favorite states, detail screens, creation, deletion, persistence, adaptive layouts, animations, localization, and a custom iOS-inspired experience.
 
-| | What it is |
-|---|---|
-| **Minimal** | A faithful 1:1 port of the original SwiftUI app — exactly what the brief asks for, in Italian, in-memory. |
-| **Enhanced** | Our take: the same app, persisted and considerably more polished (adaptive panes, undo, search, animations, i18n, …). |
-| **Cupertino** | The same app, hand-skinned to look and feel like native iOS — "how close can Compose get to iOS?" |
+This repository contains **three versions inside one app**, selectable from a launcher screen:
 
-All three are built from a small shared core, so they can be compared side by side.
-The launcher also links to a small **About the developer** screen, in case you want
-to meet the person behind the project.
+* **Minimal** — a faithful 1:1 SwiftUI-to-Compose port.
+* **Enhanced** — a more polished Android version with persistence, search, adaptive UI, undo, animations, and localization.
+* **Cupertino** — the same app hand-skinned to feel close to native iOS using Compose primitives.
+
+---
+
+## Demo
+
+### Minimal
+
+A faithful translation of the original SwiftUI brief: Italian strings, in-memory state, sorted list, detail screen, add, delete, and favorite toggle.
+
+https://github.com/user-attachments/assets/91cc59dd-4c7f-4551-85b5-70a15046829f
+
+---
+
+### Enhanced
+
+A more production-flavoured Android version with Room persistence, search, filters, undo, animations, haptics, dark mode, and language switching.
+
+https://github.com/user-attachments/assets/239a7740-6a26-44bd-aa5a-6d5225cb5f3c
+
+---
+
+### Enhanced — Foldable / Wide Screen
+
+The Enhanced version adapts into a two-pane list-detail experience on tablets, foldables, or landscape phones.
+
+https://github.com/user-attachments/assets/4a089bfa-36b1-4cac-a531-789082ea16a6
+
+---
+
+### Cupertino
+
+A Compose-built iOS-inspired version with grouped lists, iOS-style navigation, custom colors, sheets, swipe actions, and native-like interactions.
+
+https://github.com/user-attachments/assets/929e8cd5-899a-445d-90cf-7ec949de285b
+
+---
+
+## Versions at a glance
+
+| Version       | Purpose                          | State            | UI style           | Key features                                                          |
+| ------------- | -------------------------------- | ---------------- | ------------------ | --------------------------------------------------------------------- |
+| **Minimal**   | 1:1 SwiftUI port                 | In-memory        | Simple Compose     | Sorted list, detail, add, delete, favorite                            |
+| **Enhanced**  | Production-style Android version | Room + DataStore | Material 3         | Persistence, search, filters, undo, adaptive layout, i18n, animations |
+| **Cupertino** | iOS-inspired Compose experiment  | Shared app logic | Custom iOS-like UI | Large titles, grouped lists, iOS navigation, sheets, swipe delete     |
+
+All three versions are built from a small shared core so the implementations can be compared side by side.
+
+The launcher also includes an **About the developer** screen.
 
 ---
 
 ## Running it
 
-Requirements:
+### Requirements
 
-- **Android Studio** on the canary/preview channel that matches this toolchain
-  (**AGP 9.1.1 / Gradle 9.3.1 / compileSdk 36**), and **JDK 17**.
-- An emulator or device on **API 28+**.
+* Android Studio on a canary/preview channel compatible with:
 
-Steps:
+  * **AGP 9.1.1**
+  * **Gradle 9.3.1**
+  * **compileSdk 36**
+* **JDK 17**
+* Android emulator or physical device on **API 28+**
 
-1. Open the project and let Gradle sync.
-2. Run the `app` configuration.
-3. On launch, pick **Minimal**, **Enhanced** or **Cupertino**.
-4. To see the **adaptive two-pane** layout, run on a tablet/foldable **or rotate a
-   phone to landscape** — the Enhanced version splits into list + detail.
+### Steps
 
-> This project deliberately targets the **stable compileSdk 36** rather than the
-> preview SDK 37, so it builds on a normally-configured machine. See
-> [Toolchain notes](#toolchain-notes-why-it-builds-the-way-it-does).
+1. Open the project in Android Studio.
+2. Let Gradle sync.
+3. Run the `app` configuration.
+4. On launch, choose one of the three versions:
 
----
+   * **Minimal**
+   * **Enhanced**
+   * **Cupertino**
+5. To test the adaptive two-pane layout, run the Enhanced version on:
 
-## The three versions
+   * a tablet,
+   * a foldable,
+   * or a phone rotated to landscape.
 
-### Minimal — `com.urielcast.academytest2026.minimal`
-
-A direct translation of the SwiftUI app, kept intentionally small:
-
-- Sorted list (locale-aware, case-insensitive name + stable `creationIndex`
-  tie-break), detail screen, add via a bottom sheet, favorite toggle, delete.
-- Italian strings, matching the SwiftUI source (`Oggetti`, `Aggiungi`, `Preferito`…).
-- **In-memory** state (`ViewModel` + `StateFlow`) — no persistence, exactly like
-  the original.
-- A `@Preview` on every composable.
-
-### Enhanced — `com.urielcast.academytest2026.enhanced`
-
-Everything Minimal does, made persistent and production-flavoured:
-
-- **Room** persistence — data survives process death; Room is the single source
-  of truth, exposed as a `Flow`.
-- **Adaptive list-detail** — a two-pane layout on wide screens (the Android form
-  of SwiftUI's `NavigationSplitView`), collapsing to single-pane on a phone.
-- **Swipe-to-delete with Undo** (snackbar), shared with the detail screen's delete.
-- **Search** and **All / Favorites** filters.
-- **Rename** an item from the detail screen.
-- **Animated favorite** star (spring + colour crossfade) with **haptics**.
-- **Shared-element transition** — the item name morphs between the row and the
-  detail title.
-- **Predictive back** (via Navigation 3 transition specs).
-- **Dark theme** toggle and **language switch** (Italian / English / Spanish),
-  persisted with DataStore.
-
-### Cupertino — `com.urielcast.academytest2026.cupertino`
-
-The same app, hand-built to look and feel like native iOS (no third-party
-Cupertino library — everything is drawn from scratch with Compose primitives):
-
-- **iOS system palette** (`#F2F2F7` grouped background, `#007AFF` blue, …) in
-  light and dark, independent of the Material color scheme, with no ripple —
-  cells highlight on press like iOS.
-- **Large collapsing title** — the 34sp title scrolls with the content and
-  collapses into a centered inline title with a hairline, the signature iOS
-  navigation bar.
-- **Inset grouped lists** (rounded sections, 16dp-inset separators, disclosure
-  chevrons) and a **Form-style detail**.
-- **iOS push/pop navigation** — the incoming screen slides in from the right
-  while the previous one parallaxes out; a **‹ Oggetti** back button; the
-  predictive-back gesture drives the pop.
-- **iOS-style add sheet** (grabber, blue *Annulla* / *Salva*) and full-swipe red
-  **Elimina** delete.
-
-A deliberate range piece: the Enhanced version fully embraces Material, while this
-one shows how faithfully Compose can reproduce the other platform's look.
+> This project deliberately targets the stable **compileSdk 36** instead of the preview SDK 37 so it can build on a normally configured machine. See [Toolchain notes](#toolchain-notes-why-it-builds-the-way-it-does).
 
 ---
 
 ## SwiftUI → Compose mapping
 
-| SwiftUI | Android (this project) |
-|---|---|
-| `@Observable ItemViewModel` | `Item` data class + `StateFlow` in the ViewModels |
-| `ItemsListViewModel` | `MinimalItemsViewModel` / `EnhancedItemsViewModel` |
-| `NavigationSplitView` | Navigation 3 stack (Minimal) / adaptive list-detail Scene (Enhanced) |
-| `ContentView` list ↔ detail | `NavDisplay` with list/detail entries |
-| `.sheet(detent: .medium)` | `ModalBottomSheet` |
-| `FavoriteButton` (`star.fill`/`star`) | `Star` / `StarBorder` icon toggle |
-| `localizedCaseInsensitiveCompare` | `java.text.Collator` comparator |
-| `#Preview` | `@Preview` composables |
+| SwiftUI                           | Android                                                |
+| --------------------------------- | ------------------------------------------------------ |
+| `@Observable ItemViewModel`       | `Item` data class + `StateFlow` in ViewModels          |
+| `ItemsListViewModel`              | `MinimalItemsViewModel` / `EnhancedItemsViewModel`     |
+| `NavigationSplitView`             | Navigation 3 stack / custom adaptive list-detail scene |
+| `ContentView` list ↔ detail       | `NavDisplay` with list and detail entries              |
+| `.sheet(detent: .medium)`         | `ModalBottomSheet`                                     |
+| `FavoriteButton`                  | `Star` / `StarBorder` icon toggle                      |
+| `localizedCaseInsensitiveCompare` | `java.text.Collator` comparator                        |
+| `#Preview`                        | `@Preview` composables                                 |
 
 ---
 
-## Architecture
+### Navigation
 
-- **`core/`** — the shared domain: `Item`, the display comparator, and the seed
-  data. No Android dependencies; unit-tested.
-- **Minimal** — a `ViewModel` holding a `MutableStateFlow<List<Item>>`; the list
-  and detail observe the same state, mirroring SwiftUI's `@Observable`.
-- **Enhanced** — MVI-lite: a single `StateFlow<EnhancedUiState>` combines the
-  persisted items with the transient search/filter state. Room is the source of
-  truth behind an `ItemsRepository` (`Flow`-based). Dependencies are wired by a
-  small manual `AppContainer` on the `Application` — Hilt's seams without the
-  weight (swapping in Hilt later would only touch the providers). Settings live
-  in **DataStore**.
-- **Navigation 3** throughout; the Enhanced adaptive layout is a custom Nav3
-  `Scene` + `SceneStrategy` driven by the window size class.
+The project uses **Navigation 3** throughout.
+
+The Enhanced adaptive layout is implemented as a custom Navigation 3 `Scene` + `SceneStrategy`, driven by the window size class.
 
 ---
 
 ## Testing
 
-- **Unit tests** (`app/src/test`): the sorting comparator, `MinimalItemsViewModel`,
-  and `EnhancedItemsViewModel` — including **delete → restore (undo)**, search,
-  and filtering, against an in-memory fake repository.
-- **UI test** (`app/src/androidTest`): a Compose test for the Minimal list
-  (renders sorted items; the add flow reports the trimmed name).
-- **Screenshot tests** (`app/src/test/.../screenshots`, goldens in
-  `app/src/test/screenshots`): Roborazzi + Robolectric render the launcher and the
-  Minimal/Enhanced screens in the JVM and compare them against committed golden
-  images — including light/dark and the Italian/Spanish locales. No device needed,
-  so they run in CI.
-- Every screen and interaction was additionally verified by hand on an emulator
-  (phone + landscape two-pane, dark mode, Spanish).
+The project includes unit, UI, and screenshot coverage.
+
+### Unit tests
+
+Located in:
+
+```text
+app/src/test
+```
+
+Coverage includes:
+
+* sorting comparator,
+* `MinimalItemsViewModel`,
+* `EnhancedItemsViewModel`,
+* delete → restore undo flow,
+* search,
+* filtering,
+* fake in-memory repository behavior.
+
+### UI tests
+
+Located in:
+
+```text
+app/src/androidTest
+```
+
+Includes a Compose UI test for the Minimal list:
+
+* renders sorted items,
+* validates the add flow,
+* confirms trimmed item names are reported.
+
+### Screenshot tests
+
+Screenshot tests use:
+
+* Roborazzi,
+* Robolectric,
+* committed golden images.
+
+Located in:
+
+```text
+app/src/test/.../screenshots
+app/src/test/screenshots
+```
+
+They render and compare:
+
+* launcher,
+* Minimal screens,
+* Enhanced screens,
+* light mode,
+* dark mode,
+* Italian locale,
+* Spanish locale.
+
+No physical device is required for screenshot verification, so they can run in CI.
+
+### Test commands
 
 ```bash
-./gradlew :app:testDebugUnitTest            # unit + screenshot tests
-./gradlew :app:connectedDebugAndroidTest    # UI tests (needs a device/emulator)
-./gradlew :app:recordRoborazziDebug         # (re)record the screenshot goldens
-./gradlew :app:verifyRoborazziDebug         # verify screens against the goldens
+./gradlew :app:testDebugUnitTest
 ```
+
+Runs unit and screenshot tests.
+
+```bash
+./gradlew :app:connectedDebugAndroidTest
+```
+
+Runs UI tests. Requires a device or emulator.
+
+```bash
+./gradlew :app:recordRoborazziDebug
+```
+
+Records screenshot goldens.
+
+```bash
+./gradlew :app:verifyRoborazziDebug
+```
+
+Verifies screens against committed goldens.
 
 ---
 
-## Toolchain notes (why it builds the way it does)
+## Toolchain notes: why it builds the way it does
 
-This project was scaffolded on a bleeding-edge toolchain, which needed two
-deliberate decisions to stay reliably buildable:
+This project was scaffolded on a bleeding-edge Android toolchain, which required a few deliberate decisions to keep the repository reliably buildable.
 
-1. **AGP 9 built-in Kotlin + KSP.** AGP 9 compiles Kotlin itself. KSP (used by
-   Room) registers its generated sources through the `kotlin.sourceSets` DSL,
-   which built-in Kotlin rejects by default, so
-   `android.disallowKotlinSourceSets=false` is set in `gradle.properties`.
-2. **compileSdk 36, not 37.** The newest `lifecycle` (2.11) and
-   `material3-adaptive` (1.3, which contains `adaptive-navigation3` and its
-   `ListDetailSceneStrategy`) require **compileSdk 37 — an unreleased preview
-   SDK**. To keep the project building for anyone who clones it, dependencies are
-   pinned to the versions that target the stable **compileSdk 36**, and the
-   adaptive list-detail is hand-rolled from the official Nav3 *scenes-listdetail*
-   recipe using the window size class instead.
-3. **Screenshot tests via Roborazzi, not the official plugin.** Google's
-   `com.android.compose.screenshot` plugin applies and compiles the previews on
-   this toolchain, but its preview *discovery* finds zero tests under AGP 9.1.1
-   (even a trivial `@Preview`), so golden capture never runs. Roborazzi +
-   Robolectric render the screens as plain JVM tests instead — device-free and
-   unaffected by that discovery bug.
+### 1. AGP 9 built-in Kotlin + KSP
+
+AGP 9 compiles Kotlin itself.
+
+KSP, used by Room, registers generated sources through the `kotlin.sourceSets` DSL. Built-in Kotlin rejects that by default, so this project sets:
+
+```properties
+android.disallowKotlinSourceSets=false
+```
+
+in `gradle.properties`.
+
+### 2. compileSdk 36 instead of preview SDK 37
+
+The newest `lifecycle` and `material3-adaptive` versions require **compileSdk 37**, which is still a preview SDK.
+
+To keep the project buildable for anyone who clones it, this repository targets the stable **compileSdk 36** and pins dependencies accordingly.
+
+The adaptive list-detail experience is hand-rolled from the official Navigation 3 list-detail scene recipe using the window size class instead.
+
+### 3. Roborazzi instead of the official screenshot plugin
+
+Google’s `com.android.compose.screenshot` plugin applies and compiles previews on this toolchain, but preview discovery finds zero tests under AGP 9.1.1, even with a trivial `@Preview`.
+
+Roborazzi + Robolectric were used instead because they render screens as JVM tests, making screenshot verification device-free and reliable in CI.
 
 ---
 
